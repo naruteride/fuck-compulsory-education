@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "망할법정의무교육",
+  "version": "2.0",
+  "description": "진도를 자동으로 채워줍니다. 최소 시간을 넘겼으면 다음 학습 절차로 넘어갑니다.",
+  "content_scripts": [
+    {
+      "matches": ["https://poly.hrdcen.com/courses/*"],
+      "js": ["content.js"]
+    }
+  ],
+  "icons": {
+    "48": "icons/icon.png",
+    "128": "icons/icon.png"
+  }
+} 
