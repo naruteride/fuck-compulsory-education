@@ -124,21 +124,8 @@ function initializeExtension() {
 				console.error("data-min_study_seconds 요소를 찾을 수 없습니다.");
 			}
 
-			// 페이지 로드 시 체크 서클 상태 확인
+			// 페이지 로드 시 강의 완료(체크 서클) 상태 확인
 			checkAndProceed();
-
-			// 체크 서클 상태를 확인하고 다음으로 진행
-			function checkAndProceed() {
-				console.group("완료 상태 확인");
-				const checkCircle = document.querySelector("span.check-circle");
-				if (checkCircle.classList.contains("is-hidden") && (checkCircle.style.display == "" || checkCircle.style.display == "none")) {
-					console.log("안넘겼음");
-				} else {
-					console.log("넘겼음");
-					document.querySelector("button.sequence-nav-button.button-next").click();
-				}
-				console.groupEnd();
-			}
 		} else {
 			console.error("최소 시간 확인 요소가 없습니다.");
 		}
@@ -146,6 +133,19 @@ function initializeExtension() {
 	} else {
 		console.error("URL이 일치하지 않습니다:", window.location.href);
 	}
+}
+
+// 체크 서클 상태를 확인하고 다음으로 진행
+function checkAndProceed() {
+	console.group("완료 상태 확인");
+	const checkCircle = document.querySelector("span.check-circle");
+	if (checkCircle.classList.contains("is-hidden") && (checkCircle.style.display == "" || checkCircle.style.display == "none")) {
+		console.log("안넘겼음");
+	} else {
+		console.log("넘겼음");
+		document.querySelector("button.sequence-nav-button.button-next").click();
+	}
+	console.groupEnd();
 }
 
 // 스타일을 페이지에 추가
@@ -198,19 +198,19 @@ function disableTextSelection() {
 	function resetCSS() {
 		const style = document.createElement("style");
 		style.innerHTML = `
-						* {
-								-webkit-user-select: auto !important;
-								-moz-user-select: auto !important;
-								-ms-user-select: auto !important;
-								user-select: auto !important;
-						}
-						
-						::selection {
-								background: #b3d4fc !important;
-								color: #000 !important;
-								text-shadow: none !important;
-						}
-				`;
+			* {
+					-webkit-user-select: auto !important;
+					-moz-user-select: auto !important;
+					-ms-user-select: auto !important;
+					user-select: auto !important;
+			}
+			
+			::selection {
+					background: #b3d4fc !important;
+					color: #000 !important;
+					text-shadow: none !important;
+			}
+		`;
 		document.head.appendChild(style);
 	}
 
