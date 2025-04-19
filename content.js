@@ -56,24 +56,13 @@ function initializeExtension() {
 	if (window.location.href.includes("hrdcen.com/courses/course")) {
 		console.log("망할법정의무교육이 활성화되었습니다.");
 
-		// 문서 가시성 상태를 항상 "visible"로 설정
-		Object.defineProperty(Document.prototype, "visibilityState", {
-			get: function () {
-				return "visible";
-			}
-		});
+		// 페이지가 항상 보이는 상태로 유지되도록 설정
+		enableAlwaysVisiblePage();
 
-		Object.defineProperty(Document.prototype, "hidden", {
-			get: function () {
-				return "visible";
-			}
-		});
+		// 텍스트 선택 제한, 복사 제한, 붙여넣기 제한을 해제
+		disableTextSelection();
 
-		document.addEventListener("visibilitychange", event => {
-			event.stopImmediatePropagation();
-		}, true);
-
-		// 스타일 추가
+		// 프로그레스 바 스타일 추가
 		addStyles(progressBarStyles);
 
 		if (document.querySelector("span.check-circle")) {
@@ -112,9 +101,6 @@ function initializeExtension() {
 				// 프로그레스 바 생성
 				createProgressBar(minStudySeconds);
 
-				// 텍스트 선택 제한, 복사 제한, 붙여넣기 제한을 해제
-				disableTextSelection();
-
 				if (minStudySeconds > 0) {
 					let startTime = Date.now();
 					let timer = setInterval(() => {
@@ -141,7 +127,7 @@ function initializeExtension() {
 			// 페이지 로드 시 체크 서클 상태 확인
 			checkAndProceed();
 
-			// 체크 서클 상태를 확인하고 다음으로 진행하는 함수
+			// 체크 서클 상태를 확인하고 다음으로 진행
 			function checkAndProceed() {
 				console.group("완료 상태 확인");
 				const checkCircle = document.querySelector("span.check-circle");
@@ -256,14 +242,40 @@ function disableTextSelection() {
 	resetCSS();
 	restoreDefaultEvents();
 
-	console.log("텍스트 선택 방지 기능이 비활성화되었습니다.");
+	console.log("텍스트 선택 제한, 복사 제한, 붙여넣기 제한 기능이 비활성화되었습니다.");
 
-	// 5초마다 반복 실행하여 동적으로 추가되는 코드에도 대응
+	// 5초마다 반복 실행하여 동적으로 추가되는 코드에 대응
 	setInterval(() => {
 		removeEventListeners(events);
 		resetCSS();
 	}, 5000);
 };
+
+// 문서 가시성 상태를 항상 "visible"로 설정
+function enableAlwaysVisiblePage() {
+	// visibilityState 속성을 재정의하여 항상 "visible" 상태를 유지
+	Object.defineProperty(Document.prototype, "visibilityState", {
+		get: function () {
+			return "visible";
+		}
+	});
+
+	// hidden 속성도 재정의해서 페이지가 숨겨진 상태에서도 계속 활성화된 것으로 인식
+	Object.defineProperty(Document.prototype, "hidden", {
+		get: function () {
+			return "visible";
+		}
+	});
+
+	// visibilitychange 이벤트 리스너를 추가하여 페이지 가시성 변경 이벤트 차단
+	// stopImmediatePropagation으로 이벤트 전파를 중단시켜 다른 핸들러가 실행되지 않게 함
+	// true 매개변수로 캡처 단계에서 이벤트를 가로채 다른 핸들러보다 먼저 처리
+	document.addEventListener("visibilitychange", event => {
+		event.stopImmediatePropagation();
+	}, true);
+}
+
+
 
 
 // 네트워크를 조작하는 건 발각당할 위험이 커서 봉인
