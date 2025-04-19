@@ -264,3 +264,20 @@ function disableTextSelection() {
 		resetCSS();
 	}, 5000);
 };
+
+
+// 네트워크를 조작하는 건 발각당할 위험이 커서 봉인
+
+// fetch("{개발자도구>네트워크>`update_completed_seconds`>헤더>API 호출 경로}", {
+// 	method: "POST",
+// 	headers: {
+// 		"Content-Type": "application/json",
+// 		"X-Csrftoken": "{개발자도구>네트워크>`update_completed_seconds`>헤더>`X-Csrftoken` 값}"
+// 	},
+// 	body: JSON.stringify({
+// 		// 원하는 학습 시간을 ↓이곳에 채워넣으세요.
+// 		seconds: 924.725
+// 	})
+// });
+
+// // `update_completed_seconds` 네트워크 요청은, 강의가 켜져있는 브라우저를 내렸다가 다시 켰을 때 확인할 수 있습니다.
