@@ -1,11 +1,11 @@
 {
   "manifest_version": 3,
   "name": "망할법정의무교육",
-  "version": "2.1",
-  "description": "진도를 자동으로 채워줍니다. 최소 시간을 넘겼으면 다음 학습 절차로 넘어갑니다.",
+  "version": "2.2",
+  "description": "법정의무교육을 수강하는 동안 다른 업무를 효율적으로 병행할 수 있도록 도와주는 보조 도구입니다.",
   "content_scripts": [
     {
-      "matches": ["https://poly.hrdcen.com/courses/*"],
+      "matches": ["https://*.hrdcen.com/courses/*"],
       "js": ["content.js"]
     }
   ],
