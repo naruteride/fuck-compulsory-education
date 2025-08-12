@@ -5,7 +5,7 @@
   "description": "법정의무교육을 수강하는 동안 다른 업무를 효율적으로 병행할 수 있도록 도와주는 보조 도구입니다.",
   "content_scripts": [
     {
-      "matches": ["https://*.hrdcen.com/courses/*"],
+      "matches": ["https://*.hrdcen.com/courses/*", "https://*.wincampus.kr/courses/*"],
       "js": ["content.js"]
     }
   ],

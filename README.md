@@ -25,6 +25,6 @@
 
 ## 주의사항
 
-- 이 확장 프로그램은 `https://*.hrdcen.com/courses/course`로 시작하는 URL에서만 작동합니다.
+- 이 확장 프로그램은 `https://*.hrdcen.com/courses/*` 또는 `https://*.wincampus.kr/courses/*`로 시작하는 URL에서만 작동합니다.
 - 콘솔 로그를 통해 작동 상태를 확인할 수 있습니다.
 - 법정의무교육이 활성화 되어있는 동안, 새로고침 하지 마십시오! 강의의 진도는 저장되나, 프로그레스 바는 초기화됩니다.
