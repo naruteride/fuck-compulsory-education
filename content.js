@@ -53,7 +53,7 @@ function initializeExtension() {
 	console.log("초기화 함수 실행됨, 현재 URL:", window.location.href);
 
 	// 페이지 URL이 hrdcen.com 도메인의 courses 경로를 포함하는지 확인
-	if (window.location.href.includes("hrdcen.com/courses/course")) {
+	if (window.location.href.includes("/courses/course")) {
 		console.log("망할법정의무교육이 활성화되었습니다.");
 
 		// 페이지가 항상 보이는 상태로 유지되도록 설정
