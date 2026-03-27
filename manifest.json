@@ -6,7 +6,11 @@
   "content_scripts": [
     {
       "matches": ["https://*.hrdcen.com/courses/*", "https://*.wincampus.kr/courses/*"],
-      "js": ["content.js"]
+      "js": [
+        "scripts/antiRestriction.js",
+        "scripts/progressBar.js",
+        "content.js"
+      ]
     }
   ],
   "icons": {
