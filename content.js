@@ -16,31 +16,39 @@ function initializeExtension() {
 	initialized = true;
 
 	// 강의 페이지인지 확인
-	if (document.querySelector("#course-content")) {
-		console.log("강의 페이지를 인식하여 망할법정의무교육이 활성화되었습니다.");
-
-		// 페이지가 항상 보이는 상태로 유지되도록 설정
-		AntiRestriction.enableAlwaysVisiblePage();
-
-		// 텍스트 선택 제한, 복사 제한, 붙여넣기 제한을 해제
-		AntiRestriction.disableTextSelection();
-
-		// 프로그레스 바 스타일 추가 및 초기화
-		ProgressBar.init();
-
-		// 최소 학습 시간을 추출
-		const minStudySeconds = extractMinStudySeconds();
-		
-		// 프로그레스 바 생성
-		ProgressBar.create(minStudySeconds);
-		
-		// 타이머 시작
-		startStudyTimer(minStudySeconds);
-
-		// 페이지 로드 시 강의 완료(체크 서클) 상태 확인
-		checkAndProceed();
-
+	if (!document.querySelector("#course-content")) {
+		return;
 	}
+
+	console.log("강의 페이지를 인식하여 망할법정의무교육이 활성화되었습니다.");
+
+	// 페이지가 항상 보이는 상태로 유지되도록 설정
+	AntiRestriction.enableAlwaysVisiblePage();
+
+	// 텍스트 선택 제한, 복사 제한, 붙여넣기 제한을 해제
+	AntiRestriction.disableTextSelection();
+
+	// 프로그레스 바 스타일 추가 및 초기화
+	ProgressBar.init();
+
+	// 최소 학습 시간을 추출
+	const minStudySeconds = extractMinStudySeconds();
+
+	if (minStudySeconds <= 0) {
+		console.log("최소 학습 시간을 추출할 수 없습니다.")
+		return;
+	}
+
+	console.log(`최소 학습 시간: ${minStudySeconds / 60}분 (${minStudySeconds % 60}초)`);
+	
+	// 프로그레스 바 생성
+	ProgressBar.create(minStudySeconds);
+	
+	// 타이머 시작
+	startStudyTimer(minStudySeconds);
+
+	// 페이지 로드 시 강의 완료(체크 서클) 상태 확인
+	checkAndProceed();
 }
 
 // 최소 학습 시간을 추출하는 함수
@@ -50,17 +58,14 @@ function extractMinStudySeconds() {
 
 	if (minTimeElement?.dataset?.min_study_seconds) {
 		minStudySeconds = minTimeElement.dataset.min_study_seconds;
-		console.log(`최소 학습 시간: ${minStudySeconds / 60}분 (${minStudySeconds % 60}초)`);
 	} else if (minTimeElement?.querySelector("strong")?.textContent?.match(/(\d+)/)) {
 		const minTimeMatch = minTimeElement.querySelector("strong").textContent.match(/(\d+)/);
-
-		console.log(`최소 학습 시간: ${minTimeMatch[1]}분`);
 		minStudySeconds = minTimeMatch[1] * 60;
 	} else {
-		console.error("최소 시간 요소를 찾을 수 없습니다.");
+		minStudySeconds = 0;
 	}
 
-	return minStudySeconds;
+	return Number(minStudySeconds);
 }
 
 // 학습 타이머 측정 및 프로그레스 바 갱신 함수
