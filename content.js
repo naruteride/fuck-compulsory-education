@@ -1,5 +1,5 @@
 // 페이지가 완전히 로드된 후 실행
-console.log("확장 프로그램 스크립트가 로드되었습니다.");
+console.log("망할법정의무교육 확장 프로그램 스크립트가 로드되었습니다.");
 
 // DOMContentLoaded 이벤트 사용
 document.addEventListener("DOMContentLoaded", initializeExtension);
@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", initializeExtension);
 // window.onload 이벤트도 함께 사용 (DOMContentLoaded가 이미 발생했을 경우 대비)
 window.onload = initializeExtension;
 
-// 초기화 완료 여부 추적
+// 초기화 완료 여부
 let initialized = false;
 
 function initializeExtension() {
@@ -15,11 +15,9 @@ function initializeExtension() {
 	if (initialized) return;
 	initialized = true;
 
-	console.log("초기화 함수 실행됨, 현재 URL:", window.location.href);
-
-	// 페이지 URL이 hrdcen.com 또는 wincampus.kr 도메인의 courses 경로를 포함하는지 확인
-	if (window.location.href.includes("/courses/course")) {
-		console.log("망할법정의무교육이 활성화되었습니다.");
+	// 강의 페이지인지 확인
+	if (document.querySelector("#course-content")) {
+		console.log("강의 페이지를 인식하여 망할법정의무교육이 활성화되었습니다.");
 
 		// 페이지가 항상 보이는 상태로 유지되도록 설정
 		AntiRestriction.enableAlwaysVisiblePage();
@@ -30,24 +28,18 @@ function initializeExtension() {
 		// 프로그레스 바 스타일 추가 및 초기화
 		ProgressBar.init();
 
-		if (document.querySelector("span.check-circle")) {
-			// 최소 학습 시간을 추출
-			const minStudySeconds = extractMinStudySeconds();
-			
-			// 프로그레스 바 생성
-			ProgressBar.create(minStudySeconds);
-			
-			// 타이머 시작
-			startStudyTimer(minStudySeconds);
+		// 최소 학습 시간을 추출
+		const minStudySeconds = extractMinStudySeconds();
+		
+		// 프로그레스 바 생성
+		ProgressBar.create(minStudySeconds);
+		
+		// 타이머 시작
+		startStudyTimer(minStudySeconds);
 
-			// 페이지 로드 시 강의 완료(체크 서클) 상태 확인
-			checkAndProceed();
-		} else {
-			console.error("최소 시간 확인 요소가 없습니다.");
-		}
+		// 페이지 로드 시 강의 완료(체크 서클) 상태 확인
+		checkAndProceed();
 
-	} else {
-		console.error("URL이 일치하지 않습니다:", window.location.href);
 	}
 }
 
