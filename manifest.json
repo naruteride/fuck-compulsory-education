@@ -9,6 +9,7 @@
       "js": [
         "scripts/antiRestriction.js",
         "scripts/progressBar.js",
+        "scripts/toast.js",
         "content.js"
       ]
     }
