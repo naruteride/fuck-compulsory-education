@@ -43,7 +43,7 @@ function initializeExtension() {
 	// 페이지 로드(새로고침) 직후 완료 상태 확인
 	const isCompleted = !!(document.querySelector("[role=tablist]")?.querySelector(".sr")?.textContent?.includes("완료"));
 	
-	const storageKey = `study_progress_${window.location.pathname}${window.location.search}`;
+	const storageKey = `study_progress_${window.location.pathname}`;
 	let savedSeconds = localStorage.getItem(storageKey) || 0;
 
 	// (1) 이미 완료된 강의라면 기록 삭제
