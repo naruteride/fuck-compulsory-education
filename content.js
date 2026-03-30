@@ -34,12 +34,19 @@ function initializeExtension() {
 	// 최소 학습 시간을 추출
 	const minStudySeconds = extractMinStudySeconds();
 
-	if (minStudySeconds <= 0) {
+	// 최소시간 검사
+	if (!minStudySeconds) {
 		console.log("최소 학습 시간을 추출할 수 없습니다.")
 		return;
 	}
 
-	console.log(`최소 학습 시간: ${minStudySeconds / 60}분 (${minStudySeconds % 60}초)`);
+	const minutes = Math.floor(minStudySeconds / 60);
+	const seconds = minStudySeconds % 60;
+	
+	let timeText = "";
+	if (minutes > 0) timeText += `${minutes}분`;
+	if (seconds > 0) timeText += ` ${seconds}초`;
+	Toast.show(`망할법정의무교육 활성화: ${timeText} 동안 시청해야 합니다.`);
 	
 	// 프로그레스 바 생성
 	ProgressBar.create(minStudySeconds);
