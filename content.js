@@ -40,21 +40,50 @@ function initializeExtension() {
 		return;
 	}
 
-	const minutes = Math.floor(minStudySeconds / 60);
-	const seconds = minStudySeconds % 60;
+	// 페이지 로드(새로고침) 직후 완료 상태 확인
+	const isCompleted = !!(document.querySelector("[role=tablist]")?.querySelector(".sr")?.textContent?.includes("완료"));
 	
-	let timeText = "";
-	if (minutes > 0) timeText += `${minutes}분`;
-	if (seconds > 0) timeText += ` ${seconds}초`;
-	Toast.show(`망할법정의무교육 활성화: ${timeText} 동안 시청해야 합니다.`);
+	const storageKey = `study_progress_${window.location.pathname}${window.location.search}`;
+	let savedSeconds = localStorage.getItem(storageKey) || 0;
+
+	// (1) 이미 완료된 강의라면 기록 삭제
+	if (isCompleted) {
+		localStorage.removeItem(storageKey);
+		savedSeconds = 0; // 초과 저장된 시간이 UI에 영향을 주지 않도록 리셋
+	}
+	// (2) 로컬스토리지의 값은 최소 시간을 넘겼으나, 강의 완료 처리가 안 되어있는 경우
+	else if (savedSeconds >= minStudySeconds) {
+		Toast.show("시간은 넘겼으나, 강의 완료 처리가 안 되어있습니다. 로컬스토리지를 지우고 10초 뒤 페이지를 새로고침합니다.", 10000);
+		localStorage.removeItem(storageKey);
+		
+		ProgressBar.create(minStudySeconds);
+		ProgressBar.update(minStudySeconds, minStudySeconds);
+		
+		setTimeout(() => {
+			location.reload();
+		}, 10000);
+		return; // 타이머 시작 안 함
+	}
+	// (3) 정상 진행 (처음 시작 혹은 이어서 진행)
+	else {
+		const minutes = Math.floor(minStudySeconds / 60);
+		const seconds = minStudySeconds % 60;
+		let timeText = "";
+		if (minutes > 0) timeText += `${minutes}분`;
+		if (seconds > 0) timeText += ` ${seconds}초`;
+		
+		let continueText = savedSeconds > 0 ? ` (이전 진행: ${savedSeconds}초 부터)` : "";
+		Toast.show(`망할법정의무교육 활성화: ${timeText} 동안 시청해야 합니다.${continueText}`);
+	}
 	
-	// 프로그레스 바 생성
+	// 프로그레스 바 생성 및 초기 표기
 	ProgressBar.create(minStudySeconds);
+	ProgressBar.update(savedSeconds, minStudySeconds);
 	
 	// 타이머 시작
-	startStudyTimer(minStudySeconds);
+	startStudyTimer(minStudySeconds, savedSeconds, storageKey);
 
-	// 페이지 로드 시 강의 완료(체크 서클) 상태 확인
+	// 완료 처리가 된 경우 다음 강의로 진행
 	checkAndProceed();
 }
 
@@ -76,10 +105,15 @@ function extractMinStudySeconds() {
 }
 
 // 학습 타이머 측정 및 프로그레스 바 갱신 함수
-function startStudyTimer(minStudySeconds) {
-	let startTime = Date.now();
+function startStudyTimer(minStudySeconds, savedSeconds = 0, storageKey = null) {
+	let startTime = Date.now() - (savedSeconds * 1000); // 이전 진행된 시간(초) 만큼 보정하여 시작
 	let timer = setInterval(() => {
 		const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);		
+
+		// 10초에 한 번 로컬스토리지에 저장
+		if (storageKey && elapsedSeconds % 10 == 0) {
+			localStorage.setItem(storageKey, Math.min(elapsedSeconds, minStudySeconds));
+		}
 
 		// 프로그레스 바 업데이트
 		ProgressBar.update(elapsedSeconds, minStudySeconds);
@@ -87,7 +121,9 @@ function startStudyTimer(minStudySeconds) {
 		// 완료되면 타이머 중지하고 페이지 새로고침
 		if (elapsedSeconds > minStudySeconds) {
 			clearInterval(timer);
-			console.log(`${minStudySeconds}초가 지났습니다. 페이지를 새로고침합니다.`);
+			console.log(`${minStudySeconds}초가 지났습니다. 로컬스토리지를 지우고 페이지를 새로고침합니다.`);
+			if (storageKey) localStorage.removeItem(storageKey);
+			
 			setTimeout(() => {
 				location.reload();
 			}, 1000);
@@ -95,7 +131,7 @@ function startStudyTimer(minStudySeconds) {
 	}, 1000);
 }
 
-// 체크 서클 상태를 확인하고 다음으로 진행
+// 완료 상태를 확인하고 다음으로 진행
 function checkAndProceed() {
 	if (document.querySelector("[role=tablist]")?.querySelector(".sr")?.textContent?.includes("완료")) {
 		document.querySelector("button.sequence-nav-button.button-next")?.click();
