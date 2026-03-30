@@ -48,29 +48,16 @@ function extractMinStudySeconds() {
 	let minStudySeconds = 0;
 	const minTimeElement = document.querySelector("[data-min_study_seconds]");
 
-	if (minTimeElement) {
-		const strongTags = minTimeElement.querySelectorAll("strong");
+	if (minTimeElement?.dataset?.min_study_seconds) {
+		minStudySeconds = minTimeElement.dataset.min_study_seconds;
+		console.log(`최소 학습 시간: ${minStudySeconds / 60}분 (${minStudySeconds % 60}초)`);
+	} else if (minTimeElement?.querySelector("strong")?.textContent?.match(/(\d+)/)) {
+		const minTimeMatch = minTimeElement.querySelector("strong").textContent.match(/(\d+)/);
 
-		// 두 번째 <strong> 태그가 존재하면 (최소 학습 시간)
-		if (strongTags && strongTags.length >= 2) {
-			const minTimeText = strongTags[1].textContent;
-			const minTimeMatch = minTimeText.match(/(\d+)/);
-
-			if (minTimeMatch && minTimeMatch[1]) {
-				const minTimeMinutes = parseInt(minTimeMatch[1], 10);
-				minStudySeconds = minTimeMinutes * 60;
-				console.log(`최소 학습 시간: ${minTimeMinutes}분 (${minStudySeconds}초)`);
-				return minStudySeconds;
-			}
-		} 
-		
-		console.error("최소 학습 시간 텍스트를 추출할 수 없습니다.");
-		// 백업으로 data-min_study_seconds 속성 사용
-		minStudySeconds = parseInt(minTimeElement.getAttribute("data-min_study_seconds"), 10) || 0;
-		console.log(`data-min_study_seconds 속성에서 가져온 최소 시간: ${minStudySeconds}초`);
-		
+		console.log(`최소 학습 시간: ${minTimeMatch[1]}분`);
+		minStudySeconds = minTimeMatch[1] * 60;
 	} else {
-		console.error("data-min_study_seconds 요소를 찾을 수 없습니다.");
+		console.error("최소 시간 요소를 찾을 수 없습니다.");
 	}
 
 	return minStudySeconds;
