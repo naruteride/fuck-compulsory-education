@@ -54,7 +54,8 @@ const ProgressBar = {
 		document.body.appendChild(progressContainer);
 	},
 
-	update: function(progress, currentSeconds, totalSeconds) {
+	update: function(currentSeconds, totalSeconds) {
+		const progress = Math.min(100, (currentSeconds / totalSeconds) * 100);
 		const progressBar = document.querySelector(".progress-bar");
 		const progressText = document.querySelector(".progress-text");
 

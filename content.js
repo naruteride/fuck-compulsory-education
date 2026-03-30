@@ -65,18 +65,15 @@ function extractMinStudySeconds() {
 
 // 학습 타이머 측정 및 프로그레스 바 갱신 함수
 function startStudyTimer(minStudySeconds) {
-	if (minStudySeconds <= 0) return;
-
 	let startTime = Date.now();
 	let timer = setInterval(() => {
-		const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
-		const progress = Math.min(100, (elapsedSeconds / minStudySeconds) * 100);
+		const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);		
 
 		// 프로그레스 바 업데이트
-		ProgressBar.update(progress, elapsedSeconds, minStudySeconds);
+		ProgressBar.update(elapsedSeconds, minStudySeconds);
 
 		// 완료되면 타이머 중지하고 페이지 새로고침
-		if (elapsedSeconds >= minStudySeconds) {
+		if (elapsedSeconds > minStudySeconds) {
 			clearInterval(timer);
 			console.log(`${minStudySeconds}초가 지났습니다. 페이지를 새로고침합니다.`);
 			setTimeout(() => {
