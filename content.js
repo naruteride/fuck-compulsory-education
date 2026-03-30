@@ -97,16 +97,9 @@ function startStudyTimer(minStudySeconds) {
 
 // 체크 서클 상태를 확인하고 다음으로 진행
 function checkAndProceed() {
-	console.group("완료 상태 확인");
-	const checkCircle = document.querySelector("span.check-circle");
-	if (checkCircle && checkCircle.classList.contains("is-hidden") && (checkCircle.style.display == "" || checkCircle.style.display == "none")) {
-		console.log("안넘겼음");
-	} else {
-		console.log("넘겼음");
-		const nextBtn = document.querySelector("button.sequence-nav-button.button-next");
-		if (nextBtn) nextBtn.click();
+	if (document.querySelector("[role=tablist]")?.querySelector(".sr")?.textContent?.includes("완료")) {
+		document.querySelector("button.sequence-nav-button.button-next")?.click();
 	}
-	console.groupEnd();
 }
 
 
